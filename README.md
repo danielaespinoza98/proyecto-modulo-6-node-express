@@ -2,87 +2,99 @@
 
 ## Descripción
 
-Proyecto backend desarrollado progresivamente con **Node.js** y **Express.js**.
+Proyecto backend desarrollado progresivamente con **Node.js** y **Express.js** durante los módulos 6, 7 y 8.
 
-La primera etapa, correspondiente al **Módulo 6**, estableció la estructura inicial del servidor, las rutas públicas, respuestas HTML y JSON, archivos estáticos, middlewares y persistencia básica mediante un archivo de logs.
+El desarrollo se realizó de manera incremental:
 
-La segunda etapa, correspondiente al **Módulo 7**, amplía el mismo proyecto incorporando una base de datos relacional **MySQL**, acceso a datos mediante **Sequelize ORM** y **mysql2**, operaciones CRUD sobre usuarios y pedidos, relaciones entre modelos, consultas SQL manuales, validaciones y transacciones con COMMIT y ROLLBACK.
+- **Módulo 6:** estructura inicial del servidor, rutas, contenido HTML/JSON, archivos estáticos, middlewares y persistencia básica mediante logs.
+- **Módulo 7:** conexión a MySQL, Sequelize ORM, operaciones CRUD, relaciones entre modelos, SQL manual y transacciones.
+- **Módulo 8:** consolidación de la aplicación como API RESTful, autenticación mediante JSON Web Tokens (JWT), rutas protegidas y subida de archivos mediante Multer.
 
-El proyecto mantiene una arquitectura modular basada en rutas, controladores, modelos, middlewares y servicios.
+El proyecto utiliza una arquitectura modular basada en rutas, controladores, modelos, middlewares y servicios.
+
+---
+
+## Repositorio
+
+GitHub:
+
+```text
+https://github.com/danielaespinoza98/proyecto-modulo-6-node-express
+```
 
 ---
 
 # Tecnologías utilizadas
 
-## Tecnologías base
+## Tecnologías principales
 
-- Node.js 18 o superior
+- Node.js
 - Express.js
+- JavaScript
 - npm
-- dotenv
-- nodemon
-- módulo nativo `fs`
-- Git
-- GitHub
-
-## Tecnologías incorporadas en el Módulo 7
-
 - MySQL
-- MySQL Workbench
 - Sequelize ORM
 - mysql2
+- dotenv
+- nodemon
+- JSON Web Token
+- Multer
 - Postman
+- Git
+- GitHub
+- módulo nativo `fs`
 
----
-
-# Entorno utilizado durante las pruebas
+## Entorno utilizado durante las pruebas
 
 - Node.js: `v22.23.2`
 - npm: `10.9.8`
 - Express: `^4.21.2`
-- dotenv: `^16.4.7`
-- nodemon: `^3.1.9`
 - Sequelize: `6.37.8`
 - mysql2: `3.24.4`
-
-En la entrega correspondiente al **Módulo 6**, `npm install` reportó **0 vulnerabilidades**.
-
-Después de incorporar Sequelize y mysql2 para el **Módulo 7**, npm mostró advertencias adicionales de severidad moderada. Estas se revisaron sin aplicar cambios forzados sobre las dependencias para evitar alterar el funcionamiento del proyecto.
+- jsonwebtoken: `9.0.3`
+- multer: `2.0.2`
 
 ---
 
-# Estructura actual del proyecto
+# Estructura final del proyecto
 
 ```text
 .
 ├── controllers/
 │   ├── mainController.js
 │   ├── userController.js
-│   └── orderController.js
+│   ├── orderController.js
+│   ├── authController.js
+│   └── uploadController.js
+│
+├── middlewares/
+│   ├── authMiddleware.js
+│   ├── uploadMiddleware.js
+│   ├── errorHandler.js
+│   ├── notFound.js
+│   └── requestLogger.js
 │
 ├── models/
-│   ├── index.js
 │   ├── User.js
 │   ├── Order.js
-│   └── History.js
+│   ├── History.js
+│   └── index.js
 │
 ├── routes/
 │   ├── mainRoutes.js
 │   ├── userRoutes.js
-│   └── orderRoutes.js
+│   ├── orderRoutes.js
+│   ├── authRoutes.js
+│   └── uploadRoutes.js
 │
 ├── services/
 │   ├── database.js
 │   └── logService.js
 │
-├── middlewares/
-│   ├── errorHandler.js
-│   ├── notFound.js
-│   └── requestLogger.js
-│
 ├── public/
 │   ├── css/
 │   │   └── styles.css
+│   ├── uploads/
 │   └── index.html
 │
 ├── logs/
@@ -92,43 +104,24 @@ Después de incorporar Sequelize y mysql2 para el **Módulo 7**, npm mostró adv
 ├── .env.example
 ├── .gitignore
 ├── index.js
-├── package-lock.json
 ├── package.json
+├── package-lock.json
 └── README.md
 ```
 
-La estructura separa responsabilidades:
-
-- `controllers/`: contiene la lógica asociada a las solicitudes HTTP.
-- `models/`: contiene los modelos Sequelize y sus relaciones.
-- `routes/`: define los endpoints disponibles.
-- `services/`: contiene funciones reutilizables, como conexión a base de datos y escritura de logs.
-- `middlewares/`: contiene lógica intermedia para registro de solicitudes, manejo de rutas inexistentes y errores.
-- `public/`: contiene los archivos HTML y CSS estáticos.
-- `logs/`: almacena el archivo `log.txt`.
-
 ---
 
-# Punto de entrada: index.js
+# Arquitectura
 
-Se utiliza `index.js` como punto de entrada de la aplicación.
+La aplicación separa responsabilidades mediante diferentes carpetas:
 
-El servidor puede iniciarse directamente mediante:
-
-```bash
-node index.js
-```
-
-El archivo centraliza:
-
-- configuración de Express;
-- variables de entorno;
-- middlewares;
-- archivos estáticos;
-- rutas;
-- conexión a MySQL;
-- manejo de errores;
-- inicio del servidor.
+- `controllers/`: contiene la lógica que procesa las solicitudes.
+- `routes/`: define los endpoints disponibles.
+- `middlewares/`: ejecuta validaciones y lógica intermedia antes de los controladores.
+- `models/`: representa las entidades de la base de datos mediante Sequelize.
+- `services/`: contiene funciones reutilizables, como conexión a base de datos y escritura de logs.
+- `public/`: contiene archivos estáticos y archivos subidos.
+- `logs/`: contiene registros de solicitudes.
 
 ---
 
@@ -139,9 +132,10 @@ Para ejecutar el proyecto se necesita:
 - Node.js 18 o superior
 - npm
 - MySQL
-- MySQL Workbench o una herramienta equivalente
+- una base de datos creada
+- Postman o cliente HTTP equivalente para probar la API
 
-Comprobar Node.js y npm:
+Comprobar versiones:
 
 ```bash
 node -v
@@ -152,58 +146,17 @@ npm -v
 
 # Instalación
 
-Desde la carpeta raíz del proyecto:
+Desde la carpeta raíz:
 
 ```bash
 npm install
-```
-
-Las principales dependencias utilizadas son:
-
-```text
-express
-dotenv
-sequelize
-mysql2
-nodemon
-```
-
----
-
-# Ejecución
-
-## Modo normal
-
-```bash
-npm start
-```
-
-Este comando ejecuta:
-
-```bash
-node index.js
-```
-
-## Modo desarrollo
-
-```bash
-npm run dev
-```
-
-Este comando utiliza **nodemon**, permitiendo reiniciar automáticamente el servidor cuando se modifican archivos.
-
-Cuando la aplicación inicia correctamente se muestra:
-
-```text
-Conexión a MySQL establecida correctamente.
-Servidor iniciado en http://localhost:3000
 ```
 
 ---
 
 # Variables de entorno
 
-La aplicación utiliza un archivo `.env` para almacenar configuraciones y credenciales sensibles.
+La aplicación utiliza un archivo `.env` para almacenar configuración sensible.
 
 Ejemplo:
 
@@ -215,67 +168,83 @@ DB_PORT=3306
 DB_NAME=modulo7_node
 DB_USER=root
 DB_PASSWORD=tu_contrasena_mysql
+
+JWT_SECRET=tu_clave_jwt
+JWT_EXPIRES_IN=1h
 ```
 
-El archivo `.env` está incluido en `.gitignore`:
+El archivo `.env` está incluido en `.gitignore`, por lo que sus valores reales no se almacenan en GitHub.
 
-```text
-node_modules/
-.env
-```
-
-Por esta razón, las credenciales reales no son almacenadas en GitHub.
-
-El archivo `.env.example` sirve como referencia para configurar el proyecto sin exponer información sensible.
+El archivo `.env.example` contiene únicamente valores de referencia.
 
 ---
 
-# PARTE 1 — MÓDULO 6
+# Ejecución
+
+## Modo normal
+
+```bash
+npm start
+```
+
+## Modo desarrollo
+
+```bash
+npm run dev
+```
+
+Cuando todo funciona correctamente:
+
+```text
+Conexión a MySQL establecida correctamente.
+Servidor iniciado en http://localhost:3000
+```
+
+---
+
+# MÓDULO 6 — Backend inicial con Node.js y Express
 
 ## Objetivo
 
-La primera etapa del proyecto consistió en construir una aplicación backend básica y organizada con Node.js y Express, capaz de:
+La primera etapa consistió en construir una aplicación backend básica capaz de:
 
-- iniciar un servidor;
-- servir contenido HTML;
-- responder mediante JSON;
-- publicar archivos estáticos;
-- trabajar con rutas;
+- iniciar un servidor Express;
+- entregar contenido HTML;
+- responder en formato JSON;
+- servir archivos estáticos;
+- utilizar rutas;
+- utilizar controladores;
 - utilizar middlewares;
 - registrar accesos en un archivo plano;
-- manejar rutas inexistentes y errores.
+- manejar rutas inexistentes.
 
 ---
 
-# Rutas iniciales
-
 ## GET /
 
-Entrega la página principal:
+Ruta:
 
 ```text
-http://localhost:3000/
+GET http://localhost:3000/
 ```
 
-El contenido HTML se encuentra en:
+Entrega la página HTML principal desde:
 
 ```text
 public/index.html
 ```
 
-La página informa que el servidor funciona correctamente y contiene un acceso hacia la ruta `/status`.
-
 ---
 
 ## GET /status
 
-Entrega información del servidor en formato JSON:
+Ruta:
 
 ```text
-http://localhost:3000/status
+GET http://localhost:3000/status
 ```
 
-Ejemplo:
+Ejemplo de respuesta:
 
 ```json
 {
@@ -286,26 +255,23 @@ Ejemplo:
 }
 ```
 
-Los valores de `timestamp` y `uptimeSeconds` cambian según la ejecución.
-
 ---
 
-# Archivos estáticos
+## Archivos estáticos
 
-La carpeta `public` se expone mediante:
+Express publica la carpeta:
+
+```text
+public/
+```
+
+mediante:
 
 ```javascript
 express.static()
 ```
 
-Archivos principales:
-
-```text
-public/index.html
-public/css/styles.css
-```
-
-El archivo CSS puede comprobarse mediante:
+Ejemplo:
 
 ```text
 http://localhost:3000/css/styles.css
@@ -313,22 +279,13 @@ http://localhost:3000/css/styles.css
 
 ---
 
-# Registro en archivo plano
+## Logs
 
-El proyecto utiliza el middleware `requestLogger` y el servicio `logService`.
-
-Los accesos se almacenan en:
+El middleware `requestLogger` registra accesos en:
 
 ```text
 logs/log.txt
 ```
-
-Cada registro contiene:
-
-- fecha;
-- hora;
-- método HTTP;
-- ruta accedida.
 
 Ejemplo:
 
@@ -337,23 +294,18 @@ Ejemplo:
 22-09-2026 | 22:26:23 | GET /status
 ```
 
-La escritura se realiza mediante el módulo nativo `fs`.
+Cada línea registra:
 
-Durante las pruebas se registraron múltiples accesos, superando los tres registros mínimos utilizados como evidencia.
+- fecha;
+- hora;
+- método HTTP;
+- ruta solicitada.
 
 ---
 
-# Manejo de rutas inexistentes
+## Manejo de ruta inexistente
 
-La aplicación utiliza un middleware para responder de forma controlada cuando se solicita una ruta que no existe.
-
-Ejemplo:
-
-```text
-GET /prueba404
-```
-
-Respuesta:
+Una ruta no definida devuelve una respuesta controlada:
 
 ```json
 {
@@ -363,97 +315,38 @@ Respuesta:
 }
 ```
 
-Esto permite evitar respuestas desorganizadas o errores internos del servidor.
-
 ---
 
-# Diferencia entre Node.js y Express
-
-**Node.js** permite ejecutar JavaScript fuera del navegador y proporciona herramientas para trabajar con archivos, procesos, red y servidores.
-
-**Express.js** funciona sobre Node.js y simplifica la creación de aplicaciones web mediante rutas, middlewares y métodos para manejar solicitudes y respuestas HTTP.
-
----
-
-# Flujo servidor-cliente
-
-```text
-Cliente
-   ↓
-Solicitud HTTP
-   ↓
-Express
-   ↓
-Middleware
-   ↓
-Router
-   ↓
-Controller
-   ↓
-Respuesta HTML o JSON
-   ↓
-Cliente
-```
-
-Este flujo representa de forma simplificada cómo una solicitud es procesada por la aplicación.
-
----
-
-# Pruebas realizadas en el Módulo 6
-
-Se comprobó:
-
-1. Node.js `v22.23.2`.
-2. npm `10.9.8`.
-3. instalación correcta mediante `npm install`.
-4. ejecución mediante `npm run dev`.
-5. ejecución mediante `npm start`.
-6. funcionamiento de `GET /`.
-7. funcionamiento de `GET /status`.
-8. publicación de `public/css/styles.css`.
-9. funcionamiento de `logs/log.txt`.
-10. estructura modular del proyecto.
-11. scripts de `package.json`.
-12. manejo de rutas inexistentes.
-13. inicialización del repositorio Git.
-14. creación de commits parciales.
-15. publicación del proyecto en GitHub.
-
----
-
-# PARTE 2 — MÓDULO 7
+# MÓDULO 7 — Persistencia y ORM
 
 ## Objetivo
 
-En esta segunda etapa, el mismo proyecto fue ampliado para trabajar con datos persistidos en una base de datos relacional.
+La segunda etapa incorporó persistencia real mediante MySQL y Sequelize ORM.
 
-La aplicación permite actualmente:
+Se implementaron:
 
-- conectarse a MySQL;
-- utilizar variables de entorno para credenciales;
-- crear modelos mediante Sequelize;
-- realizar operaciones CRUD;
-- ejecutar consultas mediante ORM;
-- ejecutar SQL manual;
-- validar errores;
-- manejar relaciones entre modelos;
-- utilizar transacciones;
-- realizar COMMIT;
-- realizar ROLLBACK.
+- conexión Node.js → MySQL;
+- modelos;
+- CRUD;
+- relaciones;
+- SQL manual;
+- ORM;
+- validaciones;
+- transacciones;
+- COMMIT;
+- ROLLBACK.
 
 ---
 
 # Base de datos
 
-La base utilizada es:
+Base utilizada:
 
 ```text
 modulo7_node
 ```
 
-El motor utilizado es **MySQL**.
-
-Las tablas implementadas son:
+Tablas principales:
 
 ```text
 usuarios
@@ -463,7 +356,13 @@ historiales_usuario
 
 ---
 
-# Tabla usuarios
+# Modelo User
+
+Representa:
+
+```text
+usuarios
+```
 
 Campos principales:
 
@@ -476,18 +375,17 @@ created_at
 updated_at
 ```
 
-Características principales:
-
-- `id` es clave primaria.
-- `id` utiliza `AUTO_INCREMENT`.
-- `email` es único.
-- `nombre`, `email` y `password` son obligatorios.
-
 ---
 
-# Tabla pedidos
+# Modelo Order
 
-Campos principales:
+Representa:
+
+```text
+pedidos
+```
+
+Campos:
 
 ```text
 id
@@ -497,13 +395,17 @@ total
 created_at
 ```
 
-`usuario_id` relaciona cada pedido con un usuario.
-
 ---
 
-# Tabla historiales_usuario
+# Modelo History
 
-Campos principales:
+Representa:
+
+```text
+historiales_usuario
+```
+
+Campos:
 
 ```text
 id
@@ -512,130 +414,51 @@ descripcion
 created_at
 ```
 
-Esta tabla se utiliza para demostrar operaciones transaccionales.
-
----
-
-# Conexión a MySQL
-
-La conexión se encuentra centralizada en:
-
-```text
-services/database.js
-```
-
-Se utiliza Sequelize con el dialecto MySQL.
-
-La conexión se valida mediante:
-
-```javascript
-await sequelize.authenticate();
-```
-
-Cuando la conexión funciona correctamente:
-
-```text
-Conexión a MySQL establecida correctamente.
-```
-
-Después se inicia Express:
-
-```text
-Servidor iniciado en http://localhost:3000
-```
-
----
-
-# Sequelize ORM
-
-Se implementaron los siguientes modelos:
-
-## User
-
-Representa:
-
-```text
-usuarios
-```
-
-## Order
-
-Representa:
-
-```text
-pedidos
-```
-
-## History
-
-Representa:
-
-```text
-historiales_usuario
-```
-
 ---
 
 # Relación Usuario — Pedido
 
-Se implementó una relación:
+Se implementó:
 
 ```text
 Usuario 1 ───── N Pedidos
 ```
 
-Esto significa que:
-
-- un usuario puede tener muchos pedidos;
-- cada pedido pertenece a un usuario.
-
 Configuración:
 
 ```javascript
 User.hasMany(Order, {
-  foreignKey: 'usuario_id',
-  as: 'pedidos'
+    foreignKey: 'usuario_id',
+    as: 'pedidos'
 });
 
 Order.belongsTo(User, {
-  foreignKey: 'usuario_id',
-  as: 'usuario'
+    foreignKey: 'usuario_id',
+    as: 'usuario'
 });
 ```
 
-La relación se consulta mediante `include`.
+---
+
+# CRUD de usuarios
+
+## Consultar usuarios
+
+```text
+GET /usuarios
+```
+
+Utiliza Sequelize ORM.
 
 ---
 
-# CRUD DE USUARIOS
-
-## GET /usuarios
-
-Obtiene todos los usuarios utilizando Sequelize:
+## Consulta SQL manual
 
 ```text
-GET http://localhost:3000/usuarios
+GET /usuarios/sql
 ```
 
-La respuesta excluye el campo:
-
-```text
-password
-```
-
-para evitar exponer información sensible.
-
----
-
-## GET /usuarios/sql
-
-Obtiene los usuarios mediante SQL manual:
-
-```text
-GET http://localhost:3000/usuarios/sql
-```
-
-Consulta utilizada:
+Consulta:
 
 ```sql
 SELECT
@@ -650,12 +473,10 @@ ORDER BY id ASC;
 
 ---
 
-## POST /usuarios
-
-Crea un usuario.
+## Crear usuario
 
 ```text
-POST http://localhost:3000/usuarios
+POST /usuarios
 ```
 
 Ejemplo:
@@ -668,99 +489,40 @@ Ejemplo:
 }
 ```
 
-Respuesta esperada:
+---
 
-```json
-{
-  "status": "ok",
-  "message": "Usuario creado correctamente",
-  "data": {}
-}
+## Actualizar usuario
+
+```text
+PUT /usuarios/:id
 ```
 
-La contraseña no se devuelve en la respuesta.
+En el Módulo 8 esta ruta fue protegida mediante JWT.
 
 ---
 
-## PUT /usuarios/:id
-
-Actualiza nombre y/o correo.
-
-Ejemplo:
+## Eliminar usuario
 
 ```text
-PUT http://localhost:3000/usuarios/2
+DELETE /usuarios/:id
 ```
 
-Body:
-
-```json
-{
-  "nombre": "Bruno Soto Actualizado",
-  "email": "bruno.actualizado@gmail.com"
-}
-```
+En el Módulo 8 esta ruta fue protegida mediante JWT.
 
 ---
 
-## DELETE /usuarios/:id
+# CRUD de pedidos
 
-Elimina un usuario.
-
-Ejemplo:
+## GET
 
 ```text
-DELETE http://localhost:3000/usuarios/3
+GET /pedidos
 ```
 
-Antes de eliminar se comprueba que exista.
-
----
-
-## Validación de usuario inexistente
-
-Ejemplo:
+## POST
 
 ```text
-DELETE http://localhost:3000/usuarios/999
-```
-
-Respuesta:
-
-```json
-{
-  "status": "error",
-  "message": "Usuario no encontrado",
-  "data": null
-}
-```
-
-Código HTTP:
-
-```text
-404 Not Found
-```
-
----
-
-# CRUD DE PEDIDOS
-
-## GET /pedidos
-
-Obtiene todos los pedidos:
-
-```text
-GET http://localhost:3000/pedidos
-```
-
----
-
-## POST /pedidos
-
-Crea un pedido:
-
-```text
-POST http://localhost:3000/pedidos
+POST /pedidos
 ```
 
 Ejemplo:
@@ -773,221 +535,70 @@ Ejemplo:
 }
 ```
 
-Durante las pruebas también se crearon:
+## PUT
 
 ```text
-Mouse
-Teclado
+PUT /pedidos/:id
+```
+
+## DELETE
+
+```text
+DELETE /pedidos/:id
 ```
 
 ---
 
-## PUT /pedidos/:id
+# Consulta relacionada
 
-Modifica un pedido.
-
-Ejemplo:
-
-```text
-PUT http://localhost:3000/pedidos/2
-```
-
-Body:
-
-```json
-{
-  "producto": "Mouse inalámbrico",
-  "total": 30000
-}
-```
-
----
-
-## DELETE /pedidos/:id
-
-Elimina un pedido.
-
-Ejemplo:
-
-```text
-DELETE http://localhost:3000/pedidos/3
-```
-
-Durante la prueba se eliminó:
-
-```text
-Teclado
-```
-
----
-
-## Validación de pedido inexistente
-
-Ejemplo:
-
-```text
-DELETE http://localhost:3000/pedidos/999
-```
-
-Respuesta:
-
-```json
-{
-  "status": "error",
-  "message": "Pedido no encontrado",
-  "data": null
-}
-```
-
-Código HTTP:
-
-```text
-404 Not Found
-```
-
----
-
-# Consulta de usuario y pedidos
-
-La ruta:
+Ruta:
 
 ```text
 GET /usuarios/:id/pedidos
 ```
 
-permite obtener un usuario y sus pedidos asociados.
+Utiliza `include` de Sequelize para obtener un usuario junto con sus pedidos.
 
 Ejemplo:
 
 ```text
-GET http://localhost:3000/usuarios/1/pedidos
+GET /usuarios/1/pedidos
 ```
-
-Durante la prueba, Ana Pérez tenía asociados:
-
-```text
-Notebook
-Mouse
-```
-
-Se utiliza Sequelize:
-
-```javascript
-include: [
-  {
-    model: Order,
-    as: 'pedidos'
-  }
-]
-```
-
-Esto demuestra el uso de relaciones mediante ORM.
-
----
-
-# SQL manual vs Sequelize ORM
-
-Se implementaron dos formas de consultar usuarios.
-
-## Consulta mediante ORM
-
-```javascript
-User.findAll();
-```
-
-Ruta:
-
-```text
-GET /usuarios
-```
-
-## Consulta mediante SQL manual
-
-```sql
-SELECT
-    id,
-    nombre,
-    email,
-    created_at,
-    updated_at
-FROM usuarios
-ORDER BY id ASC;
-```
-
-Ruta:
-
-```text
-GET /usuarios/sql
-```
-
-Ambas consultas entregan resultados equivalentes.
-
-### Comparación
-
-SQL manual permite:
-
-- controlar directamente la consulta;
-- definir explícitamente los campos;
-- trabajar directamente con el lenguaje SQL.
-
-Sequelize permite:
-
-- trabajar mediante objetos JavaScript;
-- utilizar modelos;
-- definir relaciones;
-- utilizar métodos reutilizables;
-- facilitar consultas relacionadas mediante `include`.
 
 ---
 
 # Transacciones
 
-Se implementó una operación transaccional mediante:
+Ruta:
 
 ```text
 POST /usuarios/con-historial
 ```
 
-Esta operación realiza:
+La operación realiza:
 
 ```text
-1. Creación de un usuario
-2. Creación del historial del usuario
+1. Crear usuario
+2. Crear historial
 ```
 
-Ambas operaciones utilizan la misma transacción.
-
----
-
-## Transacción exitosa
-
-Durante la prueba se creó:
+Si ambas operaciones funcionan:
 
 ```text
-Diego Rojas
+COMMIT
 ```
 
-junto con su historial.
-
-Cuando ambas operaciones fueron exitosas se ejecutó:
-
-```javascript
-transaction.commit();
-```
-
-Resultado:
+Si alguna falla:
 
 ```text
-Transacción exitosa
+ROLLBACK
 ```
 
 ---
 
-# ROLLBACK
+# Prueba de ROLLBACK
 
-Para comprobar la consistencia de la base de datos se implementó una prueba controlada.
-
-Body utilizado:
+Ejemplo:
 
 ```json
 {
@@ -998,66 +609,60 @@ Body utilizado:
 }
 ```
 
-`forzarError` provoca intencionalmente que falle la creación del historial.
+La segunda operación falla intencionalmente.
 
-Cuando la segunda operación falla se ejecuta:
-
-```javascript
-transaction.rollback();
-```
-
-Respuesta:
-
-```json
-{
-  "status": "error",
-  "message": "Transacción revertida mediante ROLLBACK",
-  "data": null
-}
-```
-
-Posteriormente se verificó directamente en MySQL:
-
-```sql
-SELECT id, nombre, email
-FROM usuarios
-WHERE email = 'elena.rollback@gmail.com';
-```
-
-El usuario no fue encontrado.
-
-Esto demuestra que la creación inicial también fue revertida y que la transacción protegió la consistencia de los datos.
+La transacción se revierte y el usuario tampoco queda almacenado.
 
 ---
 
-# Validaciones implementadas
+# MÓDULO 8 — API RESTful, JWT y subida de archivos
 
-La aplicación incorpora validaciones para:
+## Objetivo
 
-- campos obligatorios;
-- emails duplicados;
-- usuarios inexistentes;
-- pedidos inexistentes;
-- datos sensibles;
-- consultas de base de datos;
-- operaciones transaccionales;
-- relaciones entre modelos.
+La tercera etapa consolidó el proyecto como una API RESTful capaz de ser consumida desde un cliente externo.
+
+Se incorporaron:
+
+- autenticación;
+- JWT;
+- rutas públicas y privadas;
+- middleware de autorización;
+- validación de tokens;
+- expiración de tokens;
+- subida de archivos;
+- validación de tipo;
+- validación de tamaño.
 
 ---
 
-# Formato de respuestas
+# Diseño RESTful
 
-Las respuestas exitosas siguen una estructura como:
+La API utiliza métodos HTTP según la operación:
+
+| Método | Ruta | Función |
+|---|---|---|
+| GET | `/usuarios` | Consultar usuarios |
+| POST | `/usuarios` | Crear usuario |
+| PUT | `/usuarios/:id` | Actualizar usuario |
+| DELETE | `/usuarios/:id` | Eliminar usuario |
+| GET | `/pedidos` | Consultar pedidos |
+| POST | `/pedidos` | Crear pedido |
+| PUT | `/pedidos/:id` | Actualizar pedido |
+| DELETE | `/pedidos/:id` | Eliminar pedido |
+| POST | `/login` | Autenticación |
+| POST | `/upload` | Subida de archivos |
+
+Las respuestas de la API mantienen un formato consistente:
 
 ```json
 {
   "status": "ok",
-  "message": "Operación realizada correctamente",
+  "message": "Descripción de la operación",
   "data": {}
 }
 ```
 
-Los errores utilizan:
+o:
 
 ```json
 {
@@ -1069,142 +674,507 @@ Los errores utilizan:
 
 ---
 
-# Pruebas realizadas en el Módulo 7
+# Autenticación JWT
 
-Se verificó:
+## Login
 
-1. creación de la base `modulo7_node`;
-2. creación de la tabla `usuarios`;
-3. instalación de Sequelize;
-4. instalación de mysql2;
-5. protección de `.env`;
-6. conexión Node.js → MySQL;
-7. creación de usuarios;
-8. consulta de usuarios;
-9. actualización de usuarios;
-10. eliminación de usuarios;
-11. validación de usuario inexistente;
-12. creación de `historiales_usuario`;
-13. transacción exitosa;
-14. ROLLBACK provocado;
-15. verificación del ROLLBACK en MySQL;
-16. comparación SQL manual vs ORM;
-17. creación de `pedidos`;
-18. creación del modelo `Order`;
-19. relación User 1:N Order;
-20. creación de pedidos;
-21. consulta usuario + pedidos mediante `include`;
-22. actualización de pedidos;
-23. eliminación de pedidos;
-24. validación de pedido inexistente.
+Ruta:
+
+```text
+POST /login
+```
+
+Ejemplo:
+
+```json
+{
+  "email": "ana@gmail.com",
+  "password": "123456"
+}
+```
+
+Una autenticación correcta devuelve:
+
+```json
+{
+  "status": "ok",
+  "message": "Login realizado correctamente",
+  "data": {
+    "usuario": {
+      "id": 1,
+      "nombre": "Ana Pérez",
+      "email": "ana@gmail.com"
+    },
+    "token": "JWT_GENERADO"
+  }
+}
+```
+
+El token tiene una duración configurada mediante:
+
+```env
+JWT_EXPIRES_IN=1h
+```
 
 ---
 
-# Pruebas con Postman
+# Cómo utilizar el JWT
 
-Postman fue utilizado para probar:
+Para consumir una ruta protegida se debe enviar:
 
 ```text
-GET    /usuarios
-GET    /usuarios/sql
-POST   /usuarios
+Authorization: Bearer TOKEN
+```
+
+En Postman:
+
+```text
+Authorization
+→ Bearer Token
+→ pegar token generado por POST /login
+```
+
+---
+
+# Rutas protegidas
+
+Se protegieron al menos estas dos operaciones:
+
+```text
+PUT /usuarios/:id
+DELETE /usuarios/:id
+```
+
+Estas rutas utilizan:
+
+```text
+middlewares/authMiddleware.js
+```
+
+---
+
+# Solicitud sin token
+
+Ejemplo:
+
+```text
+PUT /usuarios/2
+```
+
+sin autorización.
+
+Respuesta:
+
+```json
+{
+  "status": "error",
+  "message": "Token no proporcionado",
+  "data": null
+}
+```
+
+Código:
+
+```text
+401 Unauthorized
+```
+
+---
+
+# Solicitud con JWT válido
+
+La misma ruta con:
+
+```text
+Authorization: Bearer TOKEN_VALIDO
+```
+
+permite realizar la operación.
+
+Respuesta:
+
+```text
+200 OK
+```
+
+---
+
+# Token inválido o expirado
+
+Cuando se envía un token incorrecto o vencido:
+
+```json
+{
+  "status": "error",
+  "message": "Token inválido o expirado",
+  "data": null
+}
+```
+
+Código:
+
+```text
+401 Unauthorized
+```
+
+---
+
+# Login incorrecto
+
+Cuando las credenciales no son válidas:
+
+```json
+{
+  "status": "error",
+  "message": "Credenciales inválidas",
+  "data": null
+}
+```
+
+Código:
+
+```text
+401 Unauthorized
+```
+
+---
+
+# Subida de archivos
+
+Se implementó:
+
+```text
+POST /upload
+```
+
+El endpoint utiliza **Multer**.
+
+La ruta se encuentra protegida mediante JWT.
+
+Los archivos son almacenados en:
+
+```text
+public/uploads/
+```
+
+---
+
+# Cómo subir un archivo
+
+En Postman:
+
+```text
+POST http://localhost:3000/upload
+```
+
+Authorization:
+
+```text
+Bearer Token
+```
+
+Body:
+
+```text
+form-data
+```
+
+Campo:
+
+```text
+Key: archivo
+Type: File
+```
+
+---
+
+# Tipos de archivos permitidos
+
+El middleware acepta:
+
+```text
+JPG
+JPEG
+PNG
+WEBP
+```
+
+Tipos MIME:
+
+```text
+image/jpeg
+image/png
+image/webp
+```
+
+---
+
+# Tamaño máximo
+
+El límite configurado es:
+
+```text
+2 MB
+```
+
+---
+
+# Subida exitosa
+
+Ejemplo de respuesta:
+
+```json
+{
+  "status": "ok",
+  "message": "Archivo subido correctamente",
+  "data": {
+    "nombreOriginal": "mouse inalambrico.jpg",
+    "nombreGuardado": "archivo-generado.jpg",
+    "tipo": "image/jpeg",
+    "tamaño": 82621,
+    "url": "http://localhost:3000/uploads/archivo-generado.jpg"
+  }
+}
+```
+
+Código:
+
+```text
+201 Created
+```
+
+---
+
+# Tipo de archivo inválido
+
+Por ejemplo, si se intenta subir:
+
+```text
+prueba.docx
+```
+
+la aplicación responde:
+
+```json
+{
+  "status": "error",
+  "message": "Tipo de archivo no permitido. Solo JPG, PNG o WEBP.",
+  "data": null
+}
+```
+
+Código:
+
+```text
+400 Bad Request
+```
+
+---
+
+# Archivo demasiado grande
+
+Si la imagen supera 2 MB:
+
+```json
+{
+  "status": "error",
+  "message": "El archivo supera el tamaño máximo de 2 MB",
+  "data": null
+}
+```
+
+Código:
+
+```text
+400 Bad Request
+```
+
+---
+
+# Rutas públicas y privadas
+
+## Públicas
+
+```text
+GET  /
+GET  /status
+GET  /usuarios
+GET  /usuarios/sql
+POST /usuarios
+POST /login
+GET  /pedidos
+GET  /usuarios/:id/pedidos
+```
+
+## Protegidas mediante JWT
+
+```text
 PUT    /usuarios/:id
 DELETE /usuarios/:id
-
-POST   /usuarios/con-historial
-GET    /usuarios/:id/pedidos
-
-GET    /pedidos
-POST   /pedidos
-PUT    /pedidos/:id
-DELETE /pedidos/:id
+POST   /upload
 ```
-
----
-
-# Seguridad de datos
-
-Las credenciales de MySQL se almacenan únicamente en:
-
-```text
-.env
-```
-
-Este archivo no se versiona.
-
-Además:
-
-- el campo `password` se excluye de las consultas públicas;
-- se valida duplicación de email;
-- se comprueba la existencia de registros antes de actualizar o eliminar;
-- las transacciones utilizan rollback cuando una operación falla.
 
 ---
 
 # Decisiones técnicas
 
-## ¿Por qué MySQL?
+## ¿Por qué JWT?
 
-Se utilizó MySQL porque permite trabajar con una base de datos relacional, claves foráneas y transacciones, además de integrarse correctamente con Sequelize y mysql2.
+JWT permite autenticar solicitudes sin mantener una sesión tradicional en el servidor.
 
-## ¿Por qué mysql2?
+El token contiene información del usuario y es firmado mediante:
 
-`mysql2` funciona como cliente de conexión entre Node.js y MySQL y es compatible con Sequelize.
-
-## ¿Por qué Sequelize?
-
-Sequelize permite representar tablas mediante modelos JavaScript, trabajar con relaciones y realizar operaciones de base de datos mediante métodos del ORM.
-
-Además, facilita operaciones como:
-
-```javascript
-findAll()
-findByPk()
-findOne()
-create()
-update()
-destroy()
+```text
+JWT_SECRET
 ```
 
-## ¿Por qué se utilizan variables de entorno?
-
-Las variables de entorno permiten mantener las credenciales fuera del código fuente y evitar que contraseñas reales sean almacenadas en GitHub.
-
-## ¿Por qué se actualizan solo ciertos campos?
-
-En `PUT /usuarios/:id` se permite modificar principalmente nombre y correo electrónico para controlar qué información puede alterarse.
-
-La contraseña no se modifica mediante esa ruta.
-
-## ¿Qué validaciones se implementaron?
-
-Se validan:
-
-- campos requeridos;
-- emails duplicados;
-- existencia del usuario;
-- existencia del pedido;
-- resultados de consultas;
-- errores transaccionales.
+Solo el servidor conoce esta clave.
 
 ---
 
-# Resultado general
+## ¿Por qué proteger PUT y DELETE?
 
-El proyecto evolucionó desde una aplicación Node.js y Express con rutas, contenido HTML/JSON, archivos estáticos y persistencia básica mediante logs, hasta una aplicación conectada a una base de datos MySQL.
+Estas operaciones modifican o eliminan información persistida.
 
-Actualmente permite:
+Por este motivo requieren autenticación antes de permitir el acceso.
 
-- servir contenido web;
-- consultar datos persistidos;
-- crear datos;
-- modificarlos;
-- eliminarlos;
-- trabajar mediante SQL manual;
-- utilizar Sequelize ORM;
-- manejar relaciones entre entidades;
-- validar operaciones;
-- realizar transacciones;
-- ejecutar COMMIT y ROLLBACK.
+---
 
-El código mantiene una arquitectura modular y el repositorio conserva el historial progresivo del desarrollo correspondiente a los Módulos 6 y 7.
+## ¿Por qué proteger /upload?
+
+La subida de archivos modifica el contenido almacenado por el servidor.
+
+Proteger esta ruta evita que clientes no autenticados puedan cargar archivos libremente.
+
+---
+
+## ¿Por qué Multer?
+
+Multer facilita el manejo de solicitudes:
+
+```text
+multipart/form-data
+```
+
+utilizadas para enviar archivos desde clientes HTTP.
+
+También permite definir:
+
+- ubicación;
+- nombre;
+- límite de tamaño;
+- validación del tipo.
+
+---
+
+# Seguridad
+
+La aplicación incorpora:
+
+- variables sensibles mediante `.env`;
+- `.env` excluido mediante `.gitignore`;
+- JWT con tiempo de expiración;
+- rutas protegidas;
+- validación de token;
+- validación de tipo de archivo;
+- límite de tamaño;
+- exclusión del campo `password` en respuestas de usuarios;
+- validación de emails duplicados;
+- manejo controlado de recursos inexistentes.
+
+En esta versión del proyecto, el login trabaja con las credenciales almacenadas durante el desarrollo del Módulo 7. En una aplicación destinada a producción, las contraseñas deberían almacenarse mediante un mecanismo de hash seguro en lugar de texto plano.
+
+---
+
+# Pruebas realizadas en el Módulo 8
+
+Se comprobó:
+
+1. instalación de `jsonwebtoken`;
+2. instalación de `multer`;
+3. configuración de `JWT_SECRET`;
+4. protección de `.env`;
+5. creación de `POST /login`;
+6. login exitoso;
+7. generación de JWT;
+8. login con credenciales incorrectas;
+9. acceso a PUT sin token;
+10. acceso a PUT con token;
+11. acceso a DELETE sin token;
+12. acceso a DELETE con token;
+13. rechazo de token inválido;
+14. creación de `POST /upload`;
+15. subida exitosa de una imagen;
+16. almacenamiento en `public/uploads`;
+17. rechazo de archivo `.docx`;
+18. rechazo de imagen superior a 2 MB.
+
+---
+
+# Integración de los tres módulos
+
+## Módulo 6
+
+Permitió establecer las bases del servidor:
+
+```text
+Node.js + Express + rutas + middlewares + contenido web + logs
+```
+
+## Módulo 7
+
+Incorporó persistencia:
+
+```text
+MySQL + Sequelize + CRUD + relaciones + transacciones
+```
+
+## Módulo 8
+
+Consolidó el backend como API:
+
+```text
+REST + JWT + rutas protegidas + subida de archivos
+```
+
+El resultado final es una aplicación backend modular capaz de recibir solicitudes HTTP, trabajar con información persistida, manejar relaciones entre entidades, aplicar seguridad mediante tokens y recibir archivos desde clientes externos.
+
+---
+
+# Reflexión técnica
+
+El desarrollo progresivo permitió comprender cómo las distintas capas de una aplicación backend trabajan en conjunto.
+
+En el Módulo 6 se construyó la base de la aplicación y se comprendió el flujo entre cliente, rutas, middlewares y controladores.
+
+En el Módulo 7 se incorporó persistencia real. Sequelize permitió representar las tablas mediante modelos y trabajar con relaciones, mientras que las transacciones demostraron la importancia de mantener la consistencia de los datos frente a errores.
+
+Finalmente, en el Módulo 8 la aplicación fue consolidada como una API RESTful. JWT permitió diferenciar rutas públicas de operaciones protegidas y Multer permitió trabajar con archivos enviados desde clientes externos.
+
+La arquitectura modular permitió incorporar cada nueva funcionalidad sin reemplazar el trabajo anterior, sino extendiéndolo de forma progresiva.
+
+---
+
+# Resultado final
+
+El proyecto quedó funcional, documentado y versionado.
+
+La aplicación:
+
+- funciona sobre Node.js y Express;
+- sirve contenido web;
+- responde en HTML y JSON;
+- registra accesos;
+- se conecta a MySQL;
+- utiliza Sequelize ORM;
+- implementa CRUD;
+- utiliza relaciones entre modelos;
+- utiliza transacciones;
+- expone una API RESTful;
+- implementa autenticación mediante JWT;
+- protege rutas;
+- valida tokens;
+- permite subir archivos;
+- valida tipo y tamaño de archivos;
+- mantiene una arquitectura modular;
+- se encuentra versionada mediante Git y publicada en GitHub.
