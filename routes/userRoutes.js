@@ -10,6 +10,8 @@ const {
   getUserWithOrders
 } = require('../controllers/userController');
 
+const authMiddleware = require('../middlewares/authMiddleware');
+
 const router = express.Router();
 
 
@@ -21,7 +23,7 @@ router.get('/:id/pedidos', getUserWithOrders);
 router.post('/', createUser);
 router.post('/con-historial', createUserWithHistory);
 
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUser);
+router.put('/:id', authMiddleware, updateUser);
+router.delete('/:id', authMiddleware, deleteUser);
 
 module.exports = router;

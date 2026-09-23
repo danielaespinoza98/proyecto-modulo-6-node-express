@@ -11,6 +11,8 @@ const requestLogger = require('./middlewares/requestLogger');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
 const orderRoutes = require('./routes/orderRoutes');
+const authRoutes = require('./routes/authRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 
 const app = express();
@@ -30,6 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', mainRoutes);
 app.use('/usuarios', userRoutes);
 app.use('/pedidos', orderRoutes);
+app.use(authRoutes);
+app.use(uploadRoutes);
 
 // Maneja rutas que no existen.
 app.use(notFound);
